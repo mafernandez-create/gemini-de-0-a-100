@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemini de 0 a 100</title>
+<meta name="description" content="Curso de Gemini en 20 sesiones de 15 minutos, preparado con cariño por tu compañero de mesa.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf8f3; --card:#ffffff; --ink:#1f2330; --muted:#6a6f7e; --line:#e8e2d8;
+  --accent:#4f6bed; --accent-2:#9b5de5; --ok:#1f9d6b; --warn:#f2a541;
+  --s1:#4f6bed; --s2:#e07a2f; --s3:#9b5de5; --s4:#1f9d6b;
+  --soft:#f1eee8; --prompt:#f4f6ff; --prompt-line:#cfd7fb;
+  --shadow:0 2px 10px rgba(31,35,48,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171f; --card:#1e212c; --ink:#eceef4; --muted:#9aa0b2; --line:#2e3240;
+    --soft:#262a37; --prompt:#1f2540; --prompt-line:#35407a; --shadow:none;
+    --accent:#7d93ff; --s1:#7d93ff; --s2:#f0965a; --s3:#b88cf0; --s4:#3cc18d;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171f; --card:#1e212c; --ink:#eceef4; --muted:#9aa0b2; --line:#2e3240;
+  --soft:#262a37; --prompt:#1f2540; --prompt-line:#35407a; --shadow:none;
+  --accent:#7d93ff; --s1:#7d93ff; --s2:#f0965a; --s3:#b88cf0; --s4:#3cc18d;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,sans-serif;font-size:18px;line-height:1.55}
+a{color:var(--accent)}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 64px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.brand{font-weight:900;text-decoration:none;color:var(--ink);white-space:nowrap}
+.meter{flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.meter-bar{flex:1;height:14px;background:var(--soft);border-radius:99px;overflow:hidden}
+.meter-fill{height:100%;width:0;background:linear-gradient(90deg,var(--s1),var(--s3),var(--s4));transition:width .6s}
+.meter-num{font-weight:900;min-width:52px;text-align:right}
+.meter-lbl{font-size:13px;color:var(--muted);white-space:nowrap}
+@media (max-width:560px){.meter-lbl{display:none}}
+
+.hero{padding:40px 0 10px;text-align:center}
+.hero h1{font-size:clamp(34px,7vw,56px);line-height:1.05;margin:0 0 10px;font-weight:900}
+.hero h1 span{background:linear-gradient(90deg,var(--s1),var(--s3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);margin:6px auto;max-width:560px}
+.dedic{margin:26px auto 8px;max-width:620px;background:var(--card);border:2px dashed var(--line);border-radius:18px;padding:18px 22px;font-style:italic;box-shadow:var(--shadow);transform:rotate(-.6deg)}
+.dedic b{font-style:normal}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0}
+.how div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;font-size:15px}
+.how strong{display:block;font-size:22px}
+@media (max-width:560px){.how{grid-template-columns:repeat(2,1fr)}}
+
+.btn{display:inline-block;border:0;border-radius:12px;padding:12px 20px;font:inherit;font-weight:800;cursor:pointer;text-decoration:none;background:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.center{text-align:center}
+
+.week{margin:30px 0 8px}
+.week h2{margin:0;font-size:22px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.week h2 small{font-size:14px;color:var(--muted);font-weight:600}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+@media (max-width:700px){.days{grid-template-columns:1fr}}
+.day{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:14px;padding:12px;min-height:96px;box-shadow:var(--shadow);transition:transform .15s}
+.day:hover{transform:translateY(-2px)}
+.day .num{font-size:13px;color:var(--muted);font-weight:800}
+.day .tt{font-weight:800;line-height:1.25;font-size:16px}
+.day.done{background:var(--soft)}
+.day.done .num::after{content:" ✓ hecho";color:var(--ok)}
+.day.next{outline:3px solid var(--c);outline-offset:2px}
+
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+@media (max-width:700px){.badges{grid-template-columns:repeat(2,1fr)}}
+.badge{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;font-size:14px}
+.badge .e{font-size:38px;display:block;filter:grayscale(1);opacity:.35}
+.badge.on .e{filter:none;opacity:1}
+.badge b{display:block}
+
+/* Lección */
+.crumbs{margin:18px 0 0;font-size:15px}
+.lesson-head{margin:10px 0 18px}
+.pill{display:inline-block;font-size:13px;font-weight:800;color:#fff;background:var(--c);padding:3px 10px;border-radius:99px}
+.lesson-head h1{font-size:clamp(28px,5vw,40px);margin:8px 0 6px;line-height:1.1}
+.joke{background:var(--card);border-left:5px solid var(--warn);padding:12px 16px;border-radius:10px;font-style:italic;box-shadow:var(--shadow)}
+.block{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow)}
+.block h3{margin:0 0 10px;font-size:18px;display:flex;gap:8px;align-items:center}
+.time{margin-left:auto;font-size:13px;color:var(--muted);font-weight:700;background:var(--soft);padding:2px 9px;border-radius:99px}
+ol.steps{padding-left:22px;margin:0}
+ol.steps li{margin:0 0 14px}
+.prompt{position:relative;background:var(--prompt);border:1px solid var(--prompt-line);border-radius:12px;padding:12px 14px 12px;margin-top:8px;white-space:pre-wrap;font-size:16px;line-height:1.45}
+.copy{display:block;margin-top:10px;border:0;background:var(--accent);color:#fff;border-radius:8px;padding:6px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+kbd{background:var(--soft);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;font-family:inherit;font-size:.9em}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;cursor:pointer}
+.checks input{width:22px;height:22px;margin-top:3px;accent-color:var(--ok);flex:none}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px;flex-wrap:wrap}
+.finish{margin-top:12px}
+
+/* Examen */
+.q{margin:0 0 18px}
+.q p{font-weight:800;margin:0 0 6px}
+.q label{display:flex;gap:10px;padding:6px 10px;border-radius:10px;cursor:pointer}
+.q label:hover{background:var(--soft)}
+.q.right label.sel{background:rgba(31,157,107,.15)}
+.q.wrong label.sel{background:rgba(220,70,70,.15)}
+.result{font-size:20px;font-weight:800;margin:10px 0}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:14px;font-weight:800;transition:transform .35s,opacity .35s;opacity:0;visibility:hidden;z-index:20;max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+
+/* Diploma */
+.diploma{background:#fffdf7;color:#2b2b2b;border:10px double #c9a646;border-radius:6px;padding:40px 30px;text-align:center;margin:24px 0;font-family:Georgia,serif}
+.diploma .t1{letter-spacing:.3em;font-size:14px;color:#8a7a3e}
+.diploma h1{font-size:clamp(30px,6vw,48px);margin:10px 0}
+.diploma .name{font-size:clamp(34px,7vw,56px);font-style:italic;color:#4f6bed;margin:8px 0}
+.diploma .sign{display:flex;justify-content:space-around;margin-top:36px;font-size:15px;flex-wrap:wrap;gap:20px}
+.diploma .sign div{border-top:1px solid #999;padding-top:6px;min-width:180px}
+.diploma .seal{font-size:54px}
+@media print{
+  header.top,.noprint,.toast{display:none!important}
+  body{background:#fff}
+  .diploma{margin:0;border-width:12px}
+}
+footer{margin-top:40px;text-align:center;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#/">🚀 Gemini 0→100</a>
+    <div class="meter" id="meter" title="El Nestómetro">
+      <span class="meter-lbl">Nestómetro</span>
+      <div class="meter-bar"><div class="meter-fill" id="meterFill"></div></div>
+      <span class="meter-num" id="meterNum">0 %</span>
+    </div>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script src="contenido.js"></script>
+<script>
+// ---------- Guardado del progreso (solo en este navegador) ----------
+const KEY = "gemini-0-100-nestor";
+let estado = { hechos:{}, checks:{}, examen:null };
+try { const g = JSON.parse(localStorage.getItem(KEY)); if (g) estado = Object.assign(estado, g); } catch(e) {}
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(estado)); } catch(e) {} }
+
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const colorSemana = n => `var(--s${n})`;
+const totalHechos = () => DIAS.filter(d => estado.hechos[d.n]).length;
+const pct = () => totalHechos() * 5;
+const semanaHecha = s => DIAS.filter(d => d.semana === s).every(d => estado.hechos[d.n]);
+const siguiente = () => (DIAS.find(d => !estado.hechos[d.n]) || {}).n;
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove("show"), 2800);
+}
+function pintarMedidor(){
+  $("#meterFill").style.width = pct() + "%";
+  $("#meterNum").textContent = pct() + " %";
+}
+
+// Huevo de pascua: clics seguidos en el Nestómetro
+let clics = 0, clicT;
+$("#meter").addEventListener("click", () => {
+  clics++; clearTimeout(clicT); clicT = setTimeout(()=>clics=0, 1500);
+  if (clics === 5){ clics = 0; toast("¡Eh, Néstor! El Nestómetro no sube a clics. A currar 😄"); }
+});
+
+// ---------- Portada ----------
+function portada(){
+  const sig = siguiente();
+  let html = `
+  <section class="hero">
+    <h1>Gemini <span>de 0 a 100</span></h1>
+    <p>20 días · 15 minutos al día · cero dolor.<br>Para ${CURSO.alumno}, que a partir de ahora va a tener un becario que no duerme.</p>
+    <div class="dedic">💌 ${CURSO.dedicatoria}<br><b>— ${CURSO.firma}</b></div>
+  </section>
+  <div class="how">
+    <div><strong>2 min</strong>La historia</div>
+    <div><strong>8 min</strong>Práctica guiada</div>
+    <div><strong>3 min</strong>Misión del día</div>
+    <div><strong>2 min</strong>Checklist</div>
+  </div>
+  <p class="center">${sig ? `<a class="btn" href="#/dia/${sig}">${sig===1?"Empezar por el día 1":"Seguir por el día "+sig} →</a>` : `<a class="btn" href="#/diploma">🎓 Ver mi diploma</a>`}</p>`;
+  for (const s of SEMANAS){
+    html += `<section class="week"><h2 style="color:${colorSemana(s.n)}">Semana ${s.n} · ${s.nombre} <small>${s.rango}</small></h2><div class="days">`;
+    for (const d of DIAS.filter(x=>x.semana===s.n)){
+      html += `<a class="day ${estado.hechos[d.n]?"done":""} ${d.n===sig?"next":""}" style="--c:${colorSemana(s.n)}" href="#/dia/${d.n}">
+        <div class="num">Día ${d.n}</div><div class="tt">${d.titulo}</div></a>`;
+    }
+    html += `</div></section>`;
+  }
+  html += `<section class="week"><h2>Mis insignias</h2></section><div class="badges">` +
+    SEMANAS.map(s=>`<div class="badge ${semanaHecha(s.n)?"on":""}"><span class="e">${s.insignia.emoji}</span><b>${s.insignia.nombre}</b>${semanaHecha(s.n)?s.insignia.texto:"Termina la semana "+s.n}</div>`).join("") +
+    `</div>
+    <footer>Tu progreso se guarda en este navegador. Si cambias de ordenador, empieza donde lo dejaste marcando los días.<br>
+    <a href="#/" id="reset">Borrar mi progreso</a></footer>`;
+  app.innerHTML = html;
+  $("#reset").onclick = e => { e.preventDefault(); if (confirmarBorrado()) { estado={hechos:{},checks:{},examen:null}; guardar(); render(); } };
+}
+let borradoPendiente = false;
+function confirmarBorrado(){
+  if (borradoPendiente){ borradoPendiente=false; return true; }
+  borradoPendiente = true; toast("Pulsa otra vez «Borrar mi progreso» para confirmarlo");
+  setTimeout(()=>borradoPendiente=false, 4000); return false;
+}
+
+// ---------- Lección ----------
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function leccion(n){
+  const d = DIAS.find(x=>x.n===n); if (!d) return portada();
+  const s = SEMANAS[d.semana-1], c = colorSemana(d.semana);
+  let html = `<p class="crumbs"><a href="#/">← Todos los días</a></p>
+  <div class="lesson-head" style="--c:${c}">
+    <span class="pill">Semana ${s.n} · ${s.nombre} · Día ${d.n} de 20</span>
+    <h1>${d.titulo}</h1>
+    <div class="joke">😄 ${d.frase}</div>
+  </div>
+  <div class="block"><h3>📖 La historia <span class="time">2 min</span></h3><div>${d.historia}</div></div>`;
+  if (d.examen){
+    html += examenHTML();
+  } else {
+    html += `<div class="block"><h3>🛠️ Práctica guiada <span class="time">8 min</span></h3><ol class="steps">` +
+      d.pasos.map((p,i)=>`<li>${p.t}${p.prompt?`<div class="prompt" id="p${i}">${esc(p.prompt)}</div><button class="copy" data-p="p${i}">📋 Copiar para Gemini</button>`:""}</li>`).join("") +
+      `</ol></div>`;
+  }
+  html += `<div class="block"><h3>🎯 Misión del día <span class="time">3 min</span></h3><div>${d.mision}</div></div>`;
+  if (d.checks.length){
+    html += `<div class="block checks"><h3>✅ Checklist <span class="time">2 min</span></h3>` +
+      d.checks.map((t,i)=>`<label><input type="checkbox" data-k="${d.n}-${i}" ${estado.checks[d.n+"-"+i]?"checked":""}> ${t}</label>`).join("") +
+      `<div class="finish">${estado.hechos[d.n] ? `<p><b style="color:var(--ok)">✓ Día completado</b></p>` : `<button class="btn" id="fin" disabled>Marcar el día ${d.n} como hecho</button>`}</div></div>`;
+  }
+  html += `<div class="nav">${n>1?`<a class="btn ghost" href="#/dia/${n-1}">← Día ${n-1}</a>`:"<span></span>"}${n<20?`<a class="btn ghost" href="#/dia/${n+1}">Día ${n+1} →</a>`:""}</div>`;
+  app.innerHTML = html;
+
+  app.querySelectorAll(".copy").forEach(b => b.onclick = () => copiar($("#"+b.dataset.p).textContent, b));
+  const cajas = [...app.querySelectorAll(".checks input")];
+  const fin = $("#fin");
+  const revisar = () => { if (fin) fin.disabled = !cajas.every(x=>x.checked); };
+  cajas.forEach(x => x.onchange = () => { estado.checks[x.dataset.k] = x.checked; guardar(); revisar(); });
+  revisar();
+  if (fin) fin.onclick = () => completar(d);
+  if (d.examen) prepararExamen(d);
+  window.scrollTo(0,0);
+}
+function completar(d){
+  estado.hechos[d.n] = true; guardar(); pintarMedidor();
+  const s = SEMANAS[d.semana-1];
+  if (d.n === 20) { location.hash = "#/diploma"; return; }
+  if (semanaHecha(d.semana)) toast(`🏅 ¡Insignia desbloqueada: ${s.insignia.nombre}!`);
+  else toast(`¡Día ${d.n} hecho! El Nestómetro sube al ${pct()} %`);
+  render();
+}
+function copiar(texto, boton){
+  const ok = () => { const o = boton.textContent; boton.textContent = "✓ Copiado. Ahora Ctrl+V en Gemini"; setTimeout(()=>boton.textContent=o, 2200); };
+  if (navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(texto).then(ok, ()=>copiarViejo(texto) && ok());
+  } else if (copiarViejo(texto)) ok();
+}
+function copiarViejo(texto){
+  const t = document.createElement("textarea"); t.value = texto; t.style.position="fixed"; t.style.opacity="0";
+  document.body.appendChild(t); t.select(); let r=false; try{ r = document.execCommand("copy"); }catch(e){} t.remove(); return r;
+}
+
+// ---------- Examen ----------
+function examenHTML(){
+  return `<div class="block"><h3>📝 Examen final <span class="time">10 min</span></h3>` +
+    EXAMEN.map((q,i)=>`<div class="q" id="q${i}"><p>${i+1}. ${q.p}</p>${q.o.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join("")}</div>`).join("") +
+    `<button class="btn" id="corregir">Corregir</button><div class="result" id="res"></div></div>`;
+}
+function prepararExamen(d){
+  app.querySelectorAll(".q input").forEach(r => r.onchange = () => {
+    r.closest(".q").querySelectorAll("label").forEach(l=>l.classList.remove("sel"));
+    r.closest("label").classList.add("sel");
+  });
+  $("#corregir").onclick = () => {
+    let bien = 0, faltan = 0;
+    EXAMEN.forEach((q,i)=>{
+      const box = $("#q"+i), sel = box.querySelector("input:checked");
+      box.classList.remove("right","wrong");
+      if (!sel){ faltan++; return; }
+      if (+sel.value === q.c){ bien++; box.classList.add("right"); } else box.classList.add("wrong");
+    });
+    const res = $("#res");
+    if (faltan){ res.textContent = `Te faltan ${faltan} preguntas por contestar.`; return; }
+    estado.examen = bien; guardar();
+    if (bien >= 8){
+      res.innerHTML = `🎉 ${bien}/10. ¡Aprobado con nota, ${CURSO.alumno}! <br><button class="btn" id="grad">🎓 Recoger mi diploma</button>`;
+      $("#grad").onclick = () => completar(d);
+    } else {
+      res.textContent = `${bien}/10. ¡Casi! Las que están en rojo, repásalas y vuelve a intentarlo.`;
+    }
+  };
+}
+
+// ---------- Diploma ----------
+function diploma(){
+  if (!estado.hechos[20]){
+    app.innerHTML = `<div class="block center" style="margin-top:30px"><h3 style="justify-content:center">🔒 Diploma bloqueado</h3>
+      <p>Llevas ${totalHechos()} de 20 días. Aprueba el examen del día 20 para desbloquearlo.</p>
+      <a class="btn" href="#/dia/${siguiente()||20}">Seguir el curso</a></div>`;
+    return;
+  }
+  const f = new Date().toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"});
+  app.innerHTML = `<div class="diploma">
+    <div class="t1">DIPLOMA DE GRADUACIÓN</div>
+    <div class="seal">🏆</div>
+    <h1>Gemini Master 100 %</h1>
+    <p>Se otorga a</p>
+    <div class="name">${CURSO.alumno}</div>
+    <p>por completar las 20 sesiones del curso <b>«Gemini de 0 a 100»</b>,<br>domar correos, cazar obras en Construdata21, exprimir Alimarket,<br>crear sus propios Gems y no dejarse engañar por ninguna IA.</p>
+    <p>Nota del examen final: <b>${estado.examen ?? "–"}/10</b></p>
+    <div class="sign"><div>${f}</div><div>${CURSO.firma}</div></div>
+  </div>
+  <p class="center noprint"><button class="btn" onclick="window.print()">🖨️ Imprimir diploma</button> <a class="btn ghost" href="#/">Volver al inicio</a></p>`;
+}
+
+// ---------- Rutas ----------
+function render(){
+  pintarMedidor();
+  const h = location.hash;
+  const m = h.match(/^#\/dia\/(\d+)/);
+  if (m) leccion(+m[1]);
+  else if (h.startsWith("#/diploma")) diploma();
+  else portada();
+}
+window.addEventListener("hashchange", render);
+render();
+</script>
+</body>
+</html>
